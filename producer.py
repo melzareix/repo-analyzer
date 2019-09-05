@@ -32,7 +32,10 @@ data = read_file('url_list.txt')
 
 
 # Connect to server.
-connection = pika.BlockingConnection(pika.ConnectionParameters('127.0.0.1'))
+credentials = pika.credentials.PlainCredentials(
+    os.getenv('RABBIT_USERNAME'), os.getenv('RABBIT_PASSWORD'))
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters(os.getenv('RABBIT_HOST'), os.getenv('RABBIT_PORT'), '/', credentials))
 channel = connection.channel()
 
 # Connect to urls queue.

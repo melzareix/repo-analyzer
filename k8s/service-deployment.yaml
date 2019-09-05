@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-worker
+  labels:
+    app: data-worker-deployment
+spec:
+  replicas: 3
+  template:
+    metadata:
+      name: data-worker
+      labels:
+        app: data-worker
+    spec:
+      containers:
+        - name: data-worker
+          image: melzareix/turing-data-challenge
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: data-worker-config
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: data-worker

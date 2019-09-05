@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-worker-config
+  labels:
+    app: data-worker
+data:
+  #  RABBITMQ
+  RABBIT_USERNAME: user
+  RABBIT_PASSWORD: ls3HuJZo13
+  RABBIT_HOST: rabbitmq.default.svc.cluster.local
+  RABBIT_PORT: "5672"
+  QUEUE_NAME: URLS
+  RESULTS_QUEUE: RESULTS_JSON

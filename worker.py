@@ -10,8 +10,10 @@ queue_name = os.getenv('QUEUE_NAME')
 results_queue = os.getenv('RESULTS_QUEUE')
 
 # Connect
+credentials = pika.credentials.PlainCredentials(
+    os.getenv('RABBIT_USERNAME'), os.getenv('RABBIT_PASSWORD'))
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(os.getenv('RABBIT_HOST')))
+    pika.ConnectionParameters(os.getenv('RABBIT_HOST'), os.getenv('RABBIT_PORT'), '/', credentials))
 channel = connection.channel()
 
 # Create results queue
