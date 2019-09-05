@@ -10,7 +10,8 @@ queue_name = os.getenv('QUEUE_NAME')
 results_queue = os.getenv('RESULTS_QUEUE')
 
 # Connect
-connection = pika.BlockingConnection(pika.ConnectionParameters('127.0.0.1'))
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters(os.getenv('RABBIT_HOST')))
 channel = connection.channel()
 
 # Create results queue
@@ -21,6 +22,7 @@ def add_result_to_queue(result, ch, delivery_tag):
     """
     Add the results back to rabbitmq.
     """
+    print(delivery_tag)
     ch.basic_publish(exchange='',
                      routing_key=results_queue,
                      body=result)
