@@ -44,7 +44,6 @@ def process_file(file):
 def clone(repo):
     repo_path = ''.join(random.choice(
         string.ascii_uppercase + string.digits) for _ in range(20))
-    print(__file__)
     script_path = os.path.abspath(os.path.dirname(__file__))
     repo_path = os.path.join(script_path, '../repos', repo_path)
     git.Git().clone(repo.strip(), repo_path)

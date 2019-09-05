@@ -16,7 +16,7 @@ class Analyzer(ast.NodeVisitor):
         self.lines = set()
         self.depths = {}
         self.imports = set()
-
+        self.visited = set()
         # Number of for loops in the code
         self.loopsInside = set()
 
@@ -153,6 +153,9 @@ class Analyzer(ast.NodeVisitor):
         return res
 
     def visit(self, node):
+        if node in self.visited:
+            return
+        self.visited.add(node)
         super(Analyzer, self).visit(node)
         if hasattr(node, 'lineno'):
             self.lines.add(node.lineno)
