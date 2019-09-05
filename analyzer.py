@@ -1,31 +1,44 @@
 """
-Visitor Pattern for the genrated AST.
+Ast Analysis Vistor Pattern Class.
 """
 from __future__ import division
 import ast
-from orphanblack import api
+from stdlib_list import stdlib_list
+import re
 
 
 class Analyzer(ast.NodeVisitor):
+    """
+    Visitor Pattern for the genrated AST.
+    """
+
     def __init__(self):
         self.lines = set()
         self.depths = {}
         self.imports = set()
+
+        # Number of for loops in the code
         self.loopsInside = set()
+
         self.variablesCount = 0
 
         self.funcs = 0
         self.funcsParams = 0
         self.duplicate_code = 0
+        self.libraries = stdlib_list("2.7")
 
     def visit_Import(self, node):
         for alias in node.names:
-            self.imports.add(alias.name)
+            # External Libraries only
+            if not alias.name in self.libraries:
+                self.imports.add(alias.name)
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node):
         for alias in node.names:
-            self.imports.add(alias.name)
+            # External Libraries only
+            if not alias.name in self.libraries:
+                self.imports.add(alias.name)
         self.generic_visit(node)
 
     def visit_comprehension(self, node):
@@ -115,7 +128,7 @@ class Analyzer(ast.NodeVisitor):
         is the number of loops with that depth. Delete all depths that have value of
         zero of less.
         """
-        keys = self.depths.keys()
+        keys = list(self.depths.keys())
         for k in keys:
             if self.depths[k] <= 0:
                 self.depths.pop(k)
@@ -131,7 +144,6 @@ class Analyzer(ast.NodeVisitor):
 
         # If no nested loops
         if sm == 0:
-            print(self.loopsInside)
             res = {
                 'sum_of_loops': len(self.loopsInside),
                 'number_of_loops': len(self.loopsInside),
@@ -145,13 +157,38 @@ class Analyzer(ast.NodeVisitor):
         if hasattr(node, 'lineno'):
             self.lines.add(node.lineno)
 
-    def get_dups(self, file):
-        try:
-            self.duplicate_code = api.find_dups([file])
-        except:
-            pass
+    def calc_duplicates(self, text):
+        """
+        Find duplicate code using hashing, compare every 4 lines only.
+        """
+
+        no_comments_array = text.strip().splitlines()
+        no_comments_array = [l.strip().replace(' ', '')
+                             for l in no_comments_array]
+
+        # remove single line comments
+        no_comments_array = list(
+            filter(lambda x: not x.startswith('#'), no_comments_array))
+
+        if (len(no_comments_array) < 4):
+            self.duplicate_code = 0
+            return
+
+        table = dict()
+        for i in range(len(no_comments_array) - 3):
+            s = ''.join(no_comments_array[i:i + 4])
+            prevValue = table.get(s, 0)
+            table[s] = prevValue + 1
+
+        for k in table:
+            v = table[k]
+            if v > 1:
+                self.duplicate_code += (v - 1) * 4
 
     def stats(self):
+        """
+        Calculate the stats for the file from AST analysis.
+        """
         depth_sum_length_mean = self.calc_depth()
         return {
             'loop_depth': depth_sum_length_mean,

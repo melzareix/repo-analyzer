@@ -1,7 +1,9 @@
+from __future__ import absolute_import
 import pika
 import os
 import json
 from dotenv import load_dotenv
+from main import analyze_repo
 
 load_dotenv()
 queue_name = os.getenv('QUEUE_NAME')
@@ -29,8 +31,11 @@ def callback(ch, method, properties, body):
     """
     Handle Message from RabbitMQ.
     """
-    print("Processing %r" % body)
-    add_result_to_queue(body, ch, method.delivery_tag)
+    url = body.decode('UTF-8')
+    print("Processing %r" % url.strip())
+    result = analyze_repo(url.strip())
+    print('Done..')
+    add_result_to_queue(result, ch, method.delivery_tag)
 
 
 channel.basic_consume(queue=queue_name,

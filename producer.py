@@ -36,7 +36,8 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('127.0.0.1'))
 channel = connection.channel()
 
 # Connect to urls queue.
-queue = channel.queue_declare(queue=queue_name, durable=True)
+queue = channel.queue_declare(
+    queue=queue_name, durable=True, auto_delete=False)
 
 # Add messages to queue if not already exists.
 msg_count = queue.method.message_count
