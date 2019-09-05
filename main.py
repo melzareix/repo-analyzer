@@ -105,7 +105,11 @@ def merge_stats(repo, stats):
 
 
 def analyze_repo(repo):
-    path = clone(repo)
+    try:
+        path = clone(repo)
+    except expression as identifier:
+        return merge_stats(repo, [])
+
     files = get_files(path)
     stats = {}
     global_stats = []

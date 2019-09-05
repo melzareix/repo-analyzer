@@ -16,6 +16,7 @@ spec:
         - name: data-worker
           image: melzareix/turing-data-challenge
           imagePullPolicy: Always
+          command: ["/bin/sh", "-c", "python worker.py"]
           envFrom:
             - configMapRef:
                 name: data-worker-config

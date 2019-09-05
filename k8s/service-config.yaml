@@ -7,8 +7,10 @@ metadata:
 data:
   #  RABBITMQ
   RABBIT_USERNAME: user
-  RABBIT_PASSWORD: ls3HuJZo13
-  RABBIT_HOST: rabbitmq.default.svc.cluster.local
+  RABBIT_PASSWORD: F7nTMThIkh
+  RABBIT_HOST: funny-gopher-rabbitmq.default.svc.cluster.local
   RABBIT_PORT: "5672"
   QUEUE_NAME: URLS
   RESULTS_QUEUE: RESULTS_JSON
+  GIT_USERNAME: melzareix
+  GIT_PASSWORD: YHA-7Cv-65k-KWr
