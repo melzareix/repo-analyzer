@@ -105,9 +105,10 @@ def merge_stats(repo, stats):
 
 
 def analyze_repo(repo):
+
     try:
         path = clone(repo)
-    except expression as identifier:
+    except Exception as identifier:
         return merge_stats(repo, [])
 
     files = get_files(path)
@@ -129,4 +130,4 @@ def analyze_repo(repo):
 
 
 if __name__ == "__main__":
-    print(analyze_repo('https://github.com/BugScanTeam/DNSLog/'))
+    print(analyze_repo('https://github.com/wqxu/ConvLSTM/'))
