@@ -30,14 +30,14 @@ class Analyzer(ast.NodeVisitor):
     def visit_Import(self, node):
         for alias in node.names:
             # External Libraries only
-            if not alias.name in self.libraries:
+            if alias.name not in self.libraries:
                 self.imports.add(alias.name)
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node):
         for alias in node.names:
             # External Libraries only
-            if not alias.name in self.libraries:
+            if alias.name not in self.libraries:
                 self.imports.add(alias.name)
         self.generic_visit(node)
 
@@ -125,8 +125,8 @@ class Analyzer(ast.NodeVisitor):
     def calc_depth(self):
         """
         Calculate the depth using depth map where key is the depth and value
-        is the number of loops with that depth. Delete all depths that have value of
-        zero of less.
+        is the number of loops with that depth. Delete all depths that have
+        value of zero of less.
         """
         keys = list(self.depths.keys())
         for k in keys:
@@ -164,7 +164,6 @@ class Analyzer(ast.NodeVisitor):
         """
         Find duplicate code using hashing, compare every 4 lines only.
         """
-
         no_comments_array = text.strip().splitlines()
         no_comments_array = [l.strip().replace(' ', '')
                              for l in no_comments_array]

@@ -1,3 +1,6 @@
+"""
+Main Module to clone repo, load files and run analysis.
+"""
 from __future__ import absolute_import
 from analyzer import Analyzer
 import string
@@ -10,18 +13,31 @@ import re
 import ast
 
 
+# regex for python2 print to python3 print.
 rgx = re.compile(r'print ([/s]?(?! e)(.)+)')
 
 
 def get_files(path, ext='.py'):
+    """
+    Get all .py files in the repo directory.
+    """
     filteredFiles = []
-    for root, dirs, files in os.walk(path):
+    for root, _, files in os.walk(path):
         filteredFiles += map(lambda f: os.path.join(root, f),
-                             (filter(lambda x: x.strip().endswith(ext), files)))
+                             (filter(lambda x: x.strip().endswith(ext),
+                                     files)))
     return filteredFiles
 
 
 def process_file(file):
+    """
+    Process the file.
+    1. Load the file
+    2. Replace python2 print with python3 print.
+    3. Remove empty Lines.
+    4. Parse the code into AST.
+    5. Visit the ast nodes to collect statistics.
+    """
     with open(file, "r") as source:
         lines = rgx.sub(r'print(\1)', source.read())
         text = os.linesep.join(
@@ -42,6 +58,9 @@ def process_file(file):
 
 
 def clone(repo):
+    """
+    Clone the repo in a temp path.
+    """
     repo_path = ''.join(random.choice(
         string.ascii_uppercase + string.digits) for _ in range(20))
     script_path = os.path.abspath(os.path.dirname(__file__))
@@ -51,6 +70,10 @@ def clone(repo):
 
 
 def merge_stats(repo, stats):
+    """
+    Merge the stats from all the files to a single result
+    for that repository.
+    """
     result = {
         'repository_url': repo,
         'number of lines': 0,
@@ -106,10 +129,12 @@ def merge_stats(repo, stats):
 
 
 def analyze_repo(repo):
-
+    """
+    Clone the repo and process all python code files.
+    """
     try:
         path = clone(repo)
-    except Exception as identifier:
+    except Exception:
         return merge_stats(repo, [])
 
     files = get_files(path)
@@ -120,9 +145,8 @@ def analyze_repo(repo):
     for file in files:
         try:
             stats = process_file(file)
-        except Exception as e:
+        except Exception:
             failed_files += 1
-            # print('Failed to process', e, file)
 
         if stats is not None and len(stats.keys()) > 0:
             global_stats.append(stats)
@@ -131,4 +155,5 @@ def analyze_repo(repo):
 
 
 if __name__ == "__main__":
+    # Testing
     print(analyze_repo('https://github.com/fepegar/slicer-blockmatching/'))

@@ -1,3 +1,6 @@
+"""
+RabbitMQ Worker to get the JSON results for each repo.
+"""
 from __future__ import absolute_import
 import pika
 import os
@@ -9,28 +12,29 @@ from pathlib import Path
 load_dotenv()
 queue_name = os.getenv('RESULTS_QUEUE')
 
-# Connect
+# Connect to RabbitMQ Server.
 credentials = pika.credentials.PlainCredentials(
     os.getenv('RABBIT_USERNAME'), os.getenv('RABBIT_PASSWORD'))
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(os.getenv('RABBIT_HOST'), os.getenv('RABBIT_PORT'), '/', credentials))
+    pika.ConnectionParameters(os.getenv('RABBIT_HOST'),
+                              os.getenv('RABBIT_PORT'), '/', credentials))
 channel = connection.channel()
 
 # Create results queue
 channel.queue_declare(queue=queue_name, durable=True, passive=True)
 
+# Interval to write results in case of failure.
 SAVE_EVERY = 1000
 
 results = []
-delivery_tags = []
 script_path = os.path.abspath(os.path.dirname(__file__))
 
 
 def callback(ch, method, properties, body):
     """
-    Handle Message from RabbitMQ.
+    Get message from rabbit and add it to results list
+    write the data to disk every SAVE_EVERY message.
     """
-    data = body.decode('UTF-8')
     results.append(json.loads(body))
     if method.delivery_tag % SAVE_EVERY == 0:
         file_name = 'results_{}.json'.format(str(method.delivery_tag))

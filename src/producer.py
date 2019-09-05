@@ -1,6 +1,8 @@
+"""
+RabbitMQ Producer to add the repo urls to queue.
+"""
 import pika
 import time
-from pprint import pprint
 from dotenv import load_dotenv
 import os
 import logging
@@ -28,14 +30,16 @@ def fill_queue(queue, messages):
                               body=message)
 
 
+# read url list
 data = read_file('url_list.txt')
 
 
-# Connect to server.
+# Connect to RabbitMQ Server.
 credentials = pika.credentials.PlainCredentials(
     os.getenv('RABBIT_USERNAME'), os.getenv('RABBIT_PASSWORD'))
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(os.getenv('RABBIT_HOST'), os.getenv('RABBIT_PORT'), '/', credentials))
+    pika.ConnectionParameters(os.getenv('RABBIT_HOST'),
+                              os.getenv('RABBIT_PORT'), '/', credentials))
 channel = connection.channel()
 
 # Connect to urls queue.
