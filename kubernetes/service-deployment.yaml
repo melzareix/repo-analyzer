@@ -5,7 +5,7 @@ metadata:
   labels:
     app: data-worker-deployment
 spec:
-  replicas: 10
+  replicas: 3
   template:
     metadata:
       name: data-worker
@@ -16,6 +16,7 @@ spec:
         - name: data-worker
           image: melzareix/turing-data-challenge
           imagePullPolicy: Always
+          # command: ["/bin/sh", "-c", "tail -f /dev/null"]
           envFrom:
             - configMapRef:
                 name: data-worker-config
