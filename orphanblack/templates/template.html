@@ -1,0 +1,89 @@
+<html>
+
+<head>
+    <title> CloneDigger Report </title>
+    <script type="text/javascript">
+    function unhide(divID) { // TODO: rename?
+        var item = document.getElementById(divID);
+        if (item) {
+            item.className = (item.className == 'hidden') ? 'unhidden' : 'hidden';
+        }
+    }
+    </script>
+    <style type="text/css">
+    .hidden {
+        display: none;
+    }
+
+    .unhidden {
+        display: block;
+    }
+
+    .preformatted {
+        border: 1px dashed #3c78b5;
+        font-size: 11px;
+        font-family: Courier;
+        margin: 10px;
+        line-height: 13px;
+    }
+
+    .preformattedHeader {
+        background-color: #f0f0f0;
+        border-bottom: 1px dashed #3c78b5;
+        padding: 3px;
+        text-align: center;
+    }
+
+    .preformattedContent {
+        background-color: #f0f0f0;
+        padding: 3px;
+    }
+
+    <!-- <div class="preformatted"><div class="preformattedContent"> <pre>Clone Digger </pre> </div></div> -->
+    </style>
+</head>
+
+<body>
+    <p>Source files: {{filenames|count}}</p>
+    <a href="javascript:unhide('files');">Click here to show/hide file names</a>
+    <div id="files" class="hidden">
+        <p><b>Source files:</b>
+            {% for filename in report.filenames %}<br/>{{filename}}
+            {% endfor %}</p>
+    </div>
+    <p>Clones detected: {{report.clones|count}}</p>
+    <p>{{report.covered_source_lines_count}} of {{report.all_source_lines_count}} lines are duplicates ({{'%0.3f' %percent_source_line_clones|float}}%) </p>
+    <p>
+        <b>Parameters</b>
+        <br> clustering_threshold = {{report.parameters.clustering_threshold}}
+        <br> distance_threshold = {{report.parameters.distance_threshold}}
+        <br> size_threshold = {{report.parameters.size_threshold}}
+        <br> hashing_depth = {{report.parameters.hashing_depth}}
+        <br> clusterize_using_hash = {{report.parameters.clusterize_using_hash}}
+        <br> clusterize_using_dcup = {{report.parameters.clusterize_using_dcup}}
+        <br>
+    </p>
+    {% for clone in report.clones %}<p><b>{{clone.name}}</b>
+        <br>Distance between two fragments = {{clone.distance}}
+        <br>Clone size = {{clone.size}}
+        <table nowrap="" width="100%" max-width="100%" border="1">
+            <tbody>
+                <tr>
+                    {% for snippet in clone.snippets %}<td width="50%">Source file "{{snippet.filename}}"
+                        <br>The first line is {{snippet.first_line}}</td>{% endfor %}
+                </tr>
+                <tr>
+                    {% for snippet in clone.snippets %}<td width="50%">
+<pre>{{snippet.text}}</pre>
+                    </td>{% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </p>
+    <hr>{% endfor %}
+    <b>orphanblack</b> finds cloned regions of source code across all the files in a project. This HTML file is a human-readable representation of the results, which can also be viewed via the CLI, or via plugins using the API (e.g. <b>SublimeCloneDetector-orphanblack</b>)<br/>
+
+    <b>orphanblack</b> is a heavy refactor of <b><a href="http://clonedigger.sourceforge.net">CloneDigger</a></b> &copy 2008 Peter Bulychev. The CLI / API design is heavily inspired by <b><a href="http://nedbatchelder.com/code/coverage/">coverage.py</a></b> &copy 2009-2012 Ned Batchelder.
+</body>
+
+</html>
