@@ -116,7 +116,7 @@ def analyze_repo(repo):
             stats = process_file(file)
         except Exception as e:
             failed_files += 1
-            print('Failed to process', e, file)
+            # print('Failed to process', e, file)
 
         if stats is not None and len(stats.keys()) > 0:
             global_stats.append(stats)
