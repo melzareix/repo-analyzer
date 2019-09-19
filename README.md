@@ -31,6 +31,15 @@ For each repository, our goal is to compute the following statistics for the Pyt
 
 4. The final results are found in `results/results.json`.
 
+#### 2.1 Classes
+
+| Class         	| Description                                                                                                                                           	|
+|---------------	|-------------------------------------------------------------------------------------------------------------------------------------------------------	|
+| Worker        	| The worker class connects to rabbitmq urls queue and fetches a url and uses RepoAnalyzer to process the url then add the result to the results queue. 	|
+| Producer      	| The producer class is responsible for loading the urls file and adding the urls to the queue for processing.                                          	|
+| RepoAnalyzer  	| The repo analyzer class is responsible for cloning a repo, scanning for python files and doing the analysis using Analyzer class.                     	|
+| ResultsParser 	| The results parser class is responsible for fetching the results from the results queue and saving it to the disk.                                    	|
+
 ### 3. Installation
 #### 3.1 Dependencies
 - RabbitMQ
