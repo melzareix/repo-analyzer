@@ -1,7 +1,7 @@
-# Turing Data Engineering Challenge
+# Repo Analyzer
 
 ## Table Of Contents
-- [Turing Data Engineering Challenge](#turing-data-engineering-challenge)
+- [Repo Analyzer](#repo-analyzer)
     + [1. Introduction](#1-introduction)
     + [2. Architecture](#2-architecture)
     + [3. Installation](#3-installation)
@@ -50,8 +50,8 @@ For each repository, our goal is to compute the following statistics for the Pyt
 
 1. Clone this repository
 ```
-git clone https://github.com/melzareix/turing-data-challenge.git
-cd turing-data-challenge
+git clone https://github.com/melzareix/repo-analyzer.git
+cd repo-analyzer
 ```
 
 2. Create `.env` file with the following variables (you can also add these variables via docker)
