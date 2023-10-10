@@ -1,5 +1,5 @@
 gitdb2==2.0.5
-GitPython==3.0.2
+GitPython==3.1.37
 pika==1.1.0
 python-dotenv==0.10.3
 smmap2==2.0.5
